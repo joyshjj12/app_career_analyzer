@@ -2,5 +2,3 @@ Flask
 google-genai
 PyMuPDF 
 ReportLab 
-os
-io
