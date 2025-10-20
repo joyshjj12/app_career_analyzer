@@ -2,3 +2,4 @@ Flask
 google-genai
 PyMuPDF 
 ReportLab 
+gunicorn
