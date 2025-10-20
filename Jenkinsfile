@@ -5,7 +5,8 @@ pipeline {
     environment {
         // *** This is the updated line ***
         DOCKER_IMAGE = "joyshjj1234/resume-analyzer"  
-        IMAGE_TAG = "build-${env.BUILD_NUMBER}" 
+        IMAGE_TAG = "build-${env.BUILD_NUMBER}"
+        KUBECONFIG = "/root/.kube/config" 
     }
 
     stages {
@@ -41,6 +42,7 @@ pipeline {
                 sh "sed -i 's|:latest|:${IMAGE_TAG}|g' k8s/deployment.yaml" 
                 sh "kubectl apply -f k8s/deployment.yaml"
                 sh "kubectl apply -f k8s/service.yaml"
+                
             }
         }
     }
