@@ -38,21 +38,16 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh "sed -i 's|:latest|:${IMAGE_TAG}|g' k8s/deployment.yaml" 
-                
-                // CRITICAL FINAL FIX: Use a temporary file to bypass Windows permission bug
-                sh """
-                # 1. Read the config content and write it to a temporary, local file
-                #    The 'cp' or 'echo' method is often more reliable on Windows mounts.
-                cp /root/.kube/config kubeconfig_temp
-                
-                # 2. Use the temporary file (owned by jenkins) for kubectl
-                kubectl --kubeconfig kubeconfig_temp apply -f k8s/deployment.yaml
-                kubectl --kubeconfig kubeconfig_temp apply -f k8s/service.yaml
-                
-                # 3. Clean up the temporary file
-                rm kubeconfig_temp
-                """
+                // Use withCredentials to inject the uploaded Kubeconfig file.
+                // It makes the file available at the temporary path 'KUBECONFIG_PATH'.
+                withCredentials([file(credentialsId: 'minikube-config-file', variable: 'KUBECONFIG_PATH')]) {
+                    sh "sed -i 's|:latest|:${IMAGE_TAG}|g' k8s/deployment.yaml" 
+                    
+                    // The KUBECONFIG_PATH variable holds the path to the temporary file
+                    // that Jenkins created inside the container, which the 'jenkins' user owns.
+                    sh "kubectl --kubeconfig ${KUBECONFIG_PATH} apply -f k8s/deployment.yaml"
+                    sh "kubectl --kubeconfig ${KUBECONFIG_PATH} apply -f k8s/service.yaml"
+                }
             }
         }
     }
