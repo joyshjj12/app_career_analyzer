@@ -15,7 +15,8 @@ spec:
         app: portfolio
     spec:
       containers:
-      - name: portfolio-app
-        image: joyshjj1234/resume-app:latest
+      - name: resume-analyzer
+        # MUST MATCH the base repository path
+        image: joyshjj1234/resume-analyzer:latest 
         ports:
         - containerPort: 5000
