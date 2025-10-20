@@ -1,5 +1,9 @@
-Flask
-google-genai
-PyMuPDF 
-ReportLab 
+flask
 gunicorn
+python-dotenv
+pygobject
+pypdfium2
+pdfkit
+reportlab
+pymupdf  # Provides the 'fitz' module for PDF handling
+google-generativeai  # This fixes the ModuleNotFoundError
