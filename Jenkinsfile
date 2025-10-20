@@ -6,7 +6,7 @@ pipeline {
         // *** This is the updated line ***
         DOCKER_IMAGE = "joyshjj1234/resume-analyzer"  
         IMAGE_TAG = "build-${env.BUILD_NUMBER}"
-        KUBECONFIG = "/root/.kube/config" 
+       
     }
 
     stages {
@@ -38,11 +38,17 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
+                // Ensure the cluster is running on the host machine!
+                
                 // Replace the 'latest' tag in k8s/deployment.yaml with the new unique tag
                 sh "sed -i 's|:latest|:${IMAGE_TAG}|g' k8s/deployment.yaml" 
-                sh "kubectl apply -f k8s/deployment.yaml"
-                sh "kubectl apply -f k8s/service.yaml"
-                
+
+                // *** CRITICAL FIX: PIPE THE KUBECONFIG CONTENT TO KUBECTL ***
+                // We use the 'sh' step to execute a series of commands
+                sh """
+                cat /root/.kube/config | kubectl --kubeconfig - apply -f k8s/deployment.yaml
+                cat /root/.kube/config | kubectl --kubeconfig - apply -f k8s/service.yaml
+                """
             }
         }
     }
