@@ -36,17 +36,21 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
+              stage('Deploy to Kubernetes') {
             steps {
-                // Use withCredentials to inject the uploaded Kubeconfig file.
-                // It makes the file available at the temporary path 'KUBECONFIG_PATH'.
+                // IMPORTANT: The credentialsId 'minikube-config-file' MUST match the ID 
+                // you assigned when uploading the config-portable file to Jenkins.
                 withCredentials([file(credentialsId: 'minikube-config-file', variable: 'KUBECONFIG_PATH')]) {
+                    
+                    // 1. Substitution: Update the image tag in the deployment file
                     sh "sed -i 's|:latest|:${IMAGE_TAG}|g' k8s/deployment.yaml" 
                     
-                    // The KUBECONFIG_PATH variable holds the path to the temporary file
-                    // that Jenkins created inside the container, which the 'jenkins' user owns.
-                    sh "kubectl --kubeconfig ${KUBECONFIG_PATH} apply -f k8s/deployment.yaml"
-                    sh "kubectl --kubeconfig ${KUBECONFIG_PATH} apply -f k8s/service.yaml"
+                    // 2. Deployment: Use the securely injected KUBECONFIG_PATH variable
+                    // This variable points to the temporary, self-contained file inside the container.
+                    sh """
+                    kubectl --kubeconfig ${KUBECONFIG_PATH} apply -f k8s/deployment.yaml
+                    kubectl --kubeconfig ${KUBECONFIG_PATH} apply -f k8s/service.yaml
+                    """
                 }
             }
         }
