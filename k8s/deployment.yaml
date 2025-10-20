@@ -19,6 +19,3 @@ spec:
         image: joyshjj1234/resume-analyzer:latest
         ports:
         - containerPort: 5000
-        # --- ADDED COMMAND SECTION ---
-        command: ["gunicorn"]
-        args: ["app:app", "--bind", "0.0.0.0:5000"]
