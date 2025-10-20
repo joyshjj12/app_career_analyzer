@@ -38,16 +38,20 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                // Ensure the cluster is running on the host machine!
-                
-                // Replace the 'latest' tag in k8s/deployment.yaml with the new unique tag
                 sh "sed -i 's|:latest|:${IMAGE_TAG}|g' k8s/deployment.yaml" 
-
-                // *** CRITICAL FIX: PIPE THE KUBECONFIG CONTENT TO KUBECTL ***
-                // We use the 'sh' step to execute a series of commands
+                
+                // CRITICAL FINAL FIX: Use a temporary file to bypass Windows permission bug
                 sh """
-                cat /root/.kube/config | kubectl --kubeconfig - apply -f k8s/deployment.yaml
-                cat /root/.kube/config | kubectl --kubeconfig - apply -f k8s/service.yaml
+                # 1. Read the config content and write it to a temporary, local file
+                #    The 'cp' or 'echo' method is often more reliable on Windows mounts.
+                cp /root/.kube/config kubeconfig_temp
+                
+                # 2. Use the temporary file (owned by jenkins) for kubectl
+                kubectl --kubeconfig kubeconfig_temp apply -f k8s/deployment.yaml
+                kubectl --kubeconfig kubeconfig_temp apply -f k8s/service.yaml
+                
+                # 3. Clean up the temporary file
+                rm kubeconfig_temp
                 """
             }
         }
