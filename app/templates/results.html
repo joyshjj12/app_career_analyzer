@@ -1,0 +1,301 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resume Analysis Report</title>
+    <style>
+        body { 
+            font-family: 'Arial', sans-serif; 
+            margin: 0; 
+            background: #f0f4f8; 
+            padding-top: 60px; /* Space for fixed nav */
+        }
+        
+        /* Fixed Navigation Bar */
+        .navbar {
+            overflow: hidden;
+            background-color: #333;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex; /* Use flex for even spacing */
+            justify-content: center;
+        }
+
+        .navbar a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 17px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .navbar a:hover {
+            background-color: #575757;
+        }
+
+        .navbar a.active {
+            background-color: #0077b6;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* Main Content Area Styling */
+        #analysis-content {
+            min-height: 500px;
+            padding: 20px;
+            max-width: 940px; 
+            margin: 0 auto;
+        }
+        
+        /* Content Box Styling (for the injected content) */
+        .box { 
+            background: white; 
+            padding: 30px; 
+            margin-bottom: 20px;
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+        }
+        
+        h1 { text-align: center; color: #0077b6; margin-bottom: 30px; }
+        h2 { color: #333; border-bottom: 2px solid #0077b6; padding-bottom: 10px; margin-top: 20px; }
+        
+        /* Score Box */
+        .score-box { text-align: center; padding: 40px; background: #e6f7ff; border: 1px solid #b3e0ff; }
+        .score { font-size: 4em; font-weight: bold; color: #0077b6; margin: 0; }
+        .score-reason { font-style: italic; color: #666; margin-top: 10px; }
+        
+        /* Other utility styles */
+        .list-item { margin-bottom: 15px; line-height: 1.5; }
+        .risk-item { color: #cc0000; font-weight: bold; }
+        .improvement-item { color: #009933; font-weight: bold; }
+        .career-path { 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border-left: 5px solid #ff9900; 
+            border-radius: 5px;
+        }
+        .box pre {
+            white-space: pre-wrap; 
+            word-wrap: break-word; 
+            margin: 0;
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            text-align: left;
+        }
+        
+        /* Loader Style */
+        #loader {
+            text-align: center;
+            padding: 100px;
+            font-size: 1.2em;
+            color: #0077b6;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="navbar">
+        <a href="/">🏠 Home</a>
+        <a data-section="ats-score" class="nav-link">ATS Score & Analysis</a>
+        <a data-section="career-paths" class="nav-link">Top 3 Career Predictions</a>
+        <a data-section="improvements" class="nav-link">Detailed Improvements</a>
+        <a data-section="modified-resume" class="nav-link">Modified Resume (Placeholder)</a>
+    </div>
+
+    <h1>AI Resume Analysis Report</h1>
+    
+    <div id="analysis-content">
+        <div id="loader">Loading analysis data...</div>
+    </div>
+    
+    <script>
+        const reportId = "{{ report_id }}";
+        const contentArea = document.getElementById('analysis-content');
+        const navLinks = document.querySelectorAll('.nav-link');
+        let analysisData = null; // Store the fetched data globally
+
+        // --- SECTION RENDERING FUNCTIONS ---
+        
+        // Renders the ATS Score, Risks, and Improvements section
+        function renderAtsScore(data) {
+            return `
+                <div class="box score-box">
+                    <h2>Overall ATS & Resume Score</h2>
+                    <p class="score">${data.overall_score}/100</p>
+                    <p class="score-reason">**Reasoning:** ${data.score_reason}</p>
+                </div>
+                <div class="box">
+                    <h2>Applicant Tracking System (ATS) Analysis</h2>
+                    <h3>🚨 Identified ATS Risks</h3>
+                    <p>These elements could confuse automated screening systems, potentially leading to rejection:</p>
+            <ul>
+                ${data.ats_risks.map(item => 
+                `<li class="list-item risk-item">
+                    ❌ **${item.risk || item.item || item.explanation || 'Generic Risk Title'}** <p style="font-weight: normal; font-size: 0.9em; color: #777; margin-top: 5px;">${item.explanation}</p>
+                </li>`
+                ).join('')}
+                </ul>
+                    <h3>✅ Suggestions for ATS Improvement</h3>
+<p>Actions you can take to make your resume more machine-readable and keyword-optimized:</p>
+<ul>
+    ${data.ats_improvements.map(item => 
+    `<li class="list-item improvement-item">
+        👍 **${item.risk || item.item || item.explanation || 'Generic Suggestion Title'}**
+        <p style="font-weight: normal; font-size: 0.9em; color: #777; margin-top: 5px;">${item.explanation}</p>
+    </li>`
+    ).join('')}
+</ul>
+                </div>
+            `;
+        }
+
+        // Renders the Predicted Career Paths section
+        function renderCareerPaths(data) {
+            return `
+                <div class="box">
+                    <h2>🎯 Top 3 Predicted Career Paths</h2>
+                    <p>Based on your experience and skills, Gemini suggests you target these roles:</p>
+                    ${data.predicted_roles.map((role, index) => `
+                        <div class="career-path">
+                            <h3>${index + 1}. <strong>${role.title}</strong></h3>
+                            <p>${role.explanation}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Renders the Detailed Suggestions and Summary section
+        function renderImprovements(data) {
+            return `
+                <div class="box">
+                    <h2>Detailed Suggestions for Overall Improvement</h2>
+                    <p>This includes feedback on structure, content, language, and impact:</p>
+                    <div style="background: #fffbe6; padding: 15px; border: 1px solid #ffeb3b; border-radius: 6px; margin-bottom: 20px;">
+                        <h3>Suggested Professional Summary (High-Impact Headline)</h3>
+                        <p><strong>"${data.summary_rewrite}"</strong></p>
+                    </div>
+                    
+                    <h3>Comprehensive Feedback</h3>
+                    <pre>${data.detailed_suggestions}</pre>
+                    
+                    <h3>Extracted Key Skills</h3>
+                    <ul>
+                        ${data.key_skills.map(skill => `<li class="list-item">🚀 ${skill}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Renders the Modified Resume Placeholder section
+        function renderModifiedResumePlaceholder(data) {
+            const downloadUrl = `/report/${reportId}/download`;
+            return `
+                <div class="box">
+                    <h2>📥 Download Modified Resume Report (PDF)</h2>
+                    <div class="pdf-placeholder" style="text-align: center; padding: 50px; background: #e6f7ff; border: 2px dashed #0077b6; border-radius: 10px;">
+                        <p>Click below to download a structured PDF report containing the AI's suggested summary, skills, and detailed improvements.</p>
+                        <a href="${downloadUrl}" style="display: inline-block; padding: 10px 20px; background: #0077b6; color: white; text-decoration: none; border-radius: 5px; margin-top: 15px; font-weight: bold;">Download AI Modified Resume Report</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Map section names to rendering functions
+        const renderFunctions = {
+            'ats-score': renderAtsScore,
+            'career-paths': renderCareerPaths,
+            'improvements': renderImprovements,
+            'modified-resume': renderModifiedResumePlaceholder
+        };
+
+        // --- NAVIGATION LOGIC ---
+
+        function updateContent(section) {
+            if (!analysisData) {
+                contentArea.innerHTML = `<div id="loader">Error: Data not loaded.</div>`;
+                return;
+            }
+
+            // 1. Update URL for History API / SPA routing
+            history.pushState({ section: section }, '', `/report/${reportId}#${section}`);
+            
+            // 2. Render the new content (Only the selected section!)
+            const renderFn = renderFunctions[section];
+            if (renderFn) {
+                contentArea.innerHTML = renderFn(analysisData); // Inject only the HTML for the selected section
+            } else {
+                contentArea.innerHTML = `<div class="box">Section not found.</div>`;
+            }
+
+            // 3. Update active link class
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.section === section) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Ensure we scroll to the top of the content area
+            window.scrollTo({ top: 60, behavior: 'smooth' });
+        }
+
+        // --- INITIAL DATA FETCH ---
+
+        async function fetchAndInitialize() {
+            try {
+                contentArea.innerHTML = `<div id="loader">Loading analysis data...</div>`;
+                const response = await fetch(`/report/${reportId}/data`);
+                analysisData = await response.json();
+
+                // Determine initial section from URL hash or default to 'ats-score'
+                let initialSection = window.location.hash.substring(1) || 'ats-score';
+                
+                // Ensure initial section is valid
+                if (!renderFunctions[initialSection]) {
+                    initialSection = 'ats-score';
+                }
+
+                updateContent(initialSection);
+
+            } catch (error) {
+                console.error("Failed to fetch analysis data:", error);
+                contentArea.innerHTML = `<div class="box" style="color: red;">Failed to load analysis report. Please try analyzing your resume again.</div>`;
+            }
+        }
+
+        // Attach event listeners to navigation links
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                updateContent(link.dataset.section);
+            });
+        });
+        
+        // Handle browser back/forward buttons (History API)
+        window.onpopstate = (event) => {
+            const section = event.state ? event.state.section : (window.location.hash.substring(1) || 'ats-score');
+            if (section && analysisData) {
+                 updateContent(section);
+            } else if (!analysisData) {
+                 fetchAndInitialize();
+            }
+        };
+
+        // Run initialization on page load
+        fetchAndInitialize();
+
+    </script>
+</body>
+</html>

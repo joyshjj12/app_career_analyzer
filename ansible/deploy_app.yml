@@ -1,0 +1,13 @@
+---
+- name: Deploy portfolio app on Kubernetes
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Apply Kubernetes deployment
+      command: kubectl apply -f ../k8s/deployment.yaml
+      register: deploy_result
+    - name: Show deployment output
+      debug:
+        var: deploy_result.stdout
+    - name: Apply Kubernetes service
+      command: kubectl apply -f ../k8s/service.yaml

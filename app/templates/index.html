@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Resume Analyzer - Home</title>
+    <style>
+        /* Global Styles */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            padding: 50px; 
+            margin: 0;
+            background: #f4f7fa;
+            color: #333;
+        }
+        
+        /* Header */
+        h1 {
+            color: #0077b6;
+            margin-bottom: 50px;
+            font-weight: 700;
+        }
+
+        /* Form Container */
+        form { 
+            margin-top: 40px; 
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+        }
+        
+        /* File Input Styling */
+        input[type=file] { 
+            display: block;
+            width: 100%;
+            padding: 12px; 
+            font-size: 1em; 
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 2px dashed #b3d9ff;
+            background: #f9f9f9;
+            border-radius: 8px;
+            cursor: pointer;
+            box-sizing: border-box;
+            text-align: left;
+        }
+
+        /* Button Styling */
+        button { 
+            padding: 12px 25px; 
+            font-size: 1.1em; 
+            font-weight: 600;
+            width: 100%;
+            box-sizing: border-box;
+            background: #0077b6; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: background 0.3s ease, transform 0.1s ease;
+        }
+
+        button:hover {
+            background: #005f99;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <h1>🤖 AI Resume Analyzer (Powered by Gemini)</h1>
+    <form action="/analyze" method="post" enctype="multipart/form-data">
+        <h2>Start Analysis - Upload Your Resume (.pdf)</h2>
+        <input type="file" name="resume" accept=".pdf" required>
+        <button type="submit">Analyze Resume</button>
+    </form>
+</body>
+</html>
