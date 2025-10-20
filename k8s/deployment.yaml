@@ -15,10 +15,10 @@ spec:
         app: portfolio
     spec:
       containers:
-      - name: resume-analyzer
-        image: joyshjj1234/resume-analyzer:latest
-        env: # <--- CRITICAL: You must include this 'env:' line
-        - name: GEMINI_API_KEY # <--- CRITICAL: This is a list item under 'env:'
-          value: "AIzaSyBqBqJnskZx-YdurWWsoZ2cDLy7vdq_GE8"
-        ports:
-        - containerPort: 5000
+        - name: resume-analyzer
+          image: joyshjj1234/resume-analyzer:latest
+          env:
+            - name: GEMINI_API_KEY
+              value: "AIzaSyBqBqJnskZx-YdurWWsoZ2cDLy7vdq_GE8"
+          ports:
+            - containerPort: 5000
