@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'a_default_secret_key_for_dev') 
 
 # IMPORTANT: Use your actual key
-genai.configure(api_key="AIzaSyBqBqJnskZx-YdurWWsoZ2cDLy7vdq_GE8")
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 # In-memory storage for analysis results
 analysis_data_store = {}
