@@ -16,7 +16,9 @@ spec:
     spec:
       containers:
         - name: resume-analyzer
-          image: joyshjj1234/resume-analyzer:latest
+          image:  us-central1-docker.pkg.dev/strange-firefly-475810-h9/career-analyzer-repo/career-analyzer-image:v4
+          command: ["gunicorn"]
+          args: ["--bind", "0.0.0.0:5000", "--timeout", "300", "app:app"]
           env:
             - name: GEMINI_API_KEY
               value: "AIzaSyBqBqJnskZx-YdurWWsoZ2cDLy7vdq_GE8"

@@ -112,7 +112,7 @@ def analyze_resume():
         return redirect(url_for('home'))
         
     text = extract_text(file)
-    model = genai.GenerativeModel("models/gemini-2.5-pro")
+    model = genai.GenerativeModel("models/gemini-2.5-flash")
 
     prompt = f"""
     Analyze the following resume text. Output your response as a single, valid, raw JSON object, and nothing else.

@@ -28,7 +28,8 @@ resource "google_container_cluster" "app_cluster" {
   
   # Define the default node pool (worker nodes)
   node_config {
-    machine_type = "e2-medium" # Standard machine type
+    machine_type = "e2-medium"
+    disk_size_gb = 30 
     oauth_scopes = [ # Scopes needed for GKE
       "https://www.googleapis.com/auth/compute",
       "https://www.googleapis.com/auth/devstorage.read_only",
