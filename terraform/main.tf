@@ -1,7 +1,7 @@
 # 1. Configure the Google Cloud Provider
 # This tells Terraform how to connect to your GCP account.
 provider "google" {
-  project = "gen-lang-client-0629038510"  # <--- REPLACE with your Project ID
+  project = "strange-firefly-475810-h9"  # <--- REPLACE with your Project ID
   region  = "us-central1"          # <--- REPLACE with your desired region (e.g., europe-west1)
   zone    = "us-central1-c"        # <--- REPLACE with your desired zone
 }
