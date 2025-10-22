@@ -21,8 +21,8 @@ resource "google_container_cluster" "app_cluster" {
 
   # Link to the network created above
   network    = google_compute_network.vpc_network.name
-  subnetwork = google_compute_network.vpc_network.self_link
-  
+  subnetwork = google_compute_network.vpc_network.name
+  deletion_protection = false
   # Configuration for the control plane
   initial_node_count = 1
   
