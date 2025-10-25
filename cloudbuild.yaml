@@ -1,10 +1,4 @@
-
-
 steps:
-# 1. Build the Docker image, tagged with the short commit SHA
-# We use the $PROJECT_ID variable which is automatically available in Cloud Build.
-
-
 - name: 'gcr.io/cloud-builders/docker'
   id: 'Build and Tag'
   args: [
@@ -14,7 +8,7 @@ steps:
     'app'
   ]
 
-# 2. Push the Docker image to Google Artifact Registry
+
 - name: 'gcr.io/cloud-builders/docker'
   id: 'Push Image'
   args: [
@@ -22,11 +16,7 @@ steps:
     'us-central1-docker.pkg.dev/$PROJECT_ID/career-analyzer-repo/career-analyzer-image:$SHORT_SHA'
   ]
 
-# 3. Deploy the application to GKE using the gke-deploy tool
-# This specialized tool automatically handles:
-# a) Updating the image tag in k8s/deployment.yaml to use $SHORT_SHA
-# b) Authenticating with the GKE cluster
-# c) Rolling out the deployment (kubectl apply)
+
 - name: 'gcr.io/cloud-builders/gke-deploy'
   id: 'Deploy to GKE'
   args:
@@ -35,8 +25,6 @@ steps:
   - '--image=us-central1-docker.pkg.dev/$PROJECT_ID/career-analyzer-repo/career-analyzer-image:$SHORT_SHA'
   - '--location=us-central1'
   - '--cluster=resume-analyzer-gke-cluster'
-  - '--timeout=5m' # Give time for the deployment to roll out
+  - '--timeout=5m'
 options:
-  # CRITICAL FIX for non-default Service Account:
-  # Must explicitly set logging option to satisfy IAM constraints.
   logging: CLOUD_LOGGING_ONLY
