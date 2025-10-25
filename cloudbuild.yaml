@@ -1,6 +1,10 @@
+
+
 steps:
 # 1. Build the Docker image, tagged with the short commit SHA
 # We use the $PROJECT_ID variable which is automatically available in Cloud Build.
+
+
 - name: 'gcr.io/cloud-builders/docker'
   id: 'Build and Tag'
   args: [
