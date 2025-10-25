@@ -1,0 +1,26 @@
+# =====================================
+# Standard ignored files for app_career_analyzer
+# =====================================
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
+
+# Python virtual environments and cache
+__pycache__/
+*.pyc
+venv/
+.venv/
+.mypy_cache/
+.pytest_cache/
+
+# Docker build context
+.dockerignore
+
+# Terraform files
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate.d/
+terraform.tfstate
+terraform.tfstate.backup
