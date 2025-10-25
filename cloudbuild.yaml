@@ -36,4 +36,7 @@ steps:
   - '--location=us-central1'
   - '--cluster=resume-analyzer-gke-cluster'
   - '--timeout=5m' # Give time for the deployment to roll out
-
+options:
+  # CRITICAL FIX for non-default Service Account:
+  # Must explicitly set logging option to satisfy IAM constraints.
+  logging: CLOUD_LOGGING_ONLY
