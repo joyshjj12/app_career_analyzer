@@ -11,7 +11,7 @@ steps:
     'build',
     '-t',
     'us-central1-docker.pkg.dev/$PROJECT_ID/career-analyzer-repo/career-analyzer-image:$SHORT_SHA',
-    '.'
+    'app'
   ]
 
 # 2. Push the Docker image to Google Artifact Registry
