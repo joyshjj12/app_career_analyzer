@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: resume-analyzer
-          image:  us-central1-docker.pkg.dev/strange-firefly-475810-h9/career-analyzer-repo/career-analyzer-image:v4
+          image: us-central1-docker.pkg.dev/strange-firefly-475810-h9/career-analyzer-repo/career-analyzer-image:latest
           command: ["gunicorn"]
           args: ["--bind", "0.0.0.0:5000", "--timeout", "300", "app:app"]
           env:
